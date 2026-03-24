@@ -277,6 +277,92 @@
       padding: 16px 24px; text-align: center; color: var(--muted); font-size: 0.75rem;
     }
 
+    /* ── Header partner button ── */
+    .btn-partner {
+      position: absolute; right: 16px;
+      background: var(--sf); border: 1px solid var(--border);
+      color: var(--text); font-family: var(--font);
+      font-size: 0.78rem; font-weight: 700;
+      padding: 6px 14px; border-radius: 999px; cursor: pointer;
+      transition: background .15s, border-color .15s;
+    }
+    .btn-partner:hover { background: var(--sf2); border-color: var(--accent); color: var(--accent); }
+
+    /* ── Modal ── */
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.35); backdrop-filter: blur(4px);
+      z-index: 100;
+    }
+    .modal-panel {
+      display: none; position: fixed;
+      top: 0; right: 0; bottom: 0;
+      width: min(400px, 100vw);
+      background: var(--bg); overflow-y: auto;
+      padding: 28px 24px 48px;
+      box-shadow: -8px 0 40px rgba(0,0,0,.12);
+      z-index: 101;
+      transform: translateX(100%);
+      transition: transform .3s cubic-bezier(.4,0,.2,1);
+    }
+    .modal-panel.open { transform: translateX(0); }
+    .modal-backdrop.open { display: block; }
+    .modal-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .modal-close {
+      background: var(--sf); border: none; color: var(--muted);
+      font-size: 0.9rem; width: 32px; height: 32px; border-radius: 50%;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 2px;
+      transition: background .15s, color .15s;
+    }
+    .modal-close:hover { background: var(--sf2); color: var(--text); }
+
+    /* ── Contact Form ── */
+    .contact-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: .08em;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 6px;
+    }
+    .contact-title {
+      font-size: 1.15rem; font-weight: 800; letter-spacing: -0.5px;
+    }
+    .contact-sub {
+      font-size: 0.82rem; color: var(--muted); margin-bottom: 20px; line-height: 1.5;
+    }
+    .contact-form { display: flex; flex-direction: column; gap: 10px; }
+    .contact-form input,
+    .contact-form select,
+    .contact-form textarea {
+      width: 100%;
+      background: var(--sf); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 14px;
+      font-family: var(--font); font-size: 0.9rem; color: var(--text);
+      outline: none; transition: border-color .2s;
+      -webkit-appearance: none; appearance: none;
+    }
+    .contact-form input:focus,
+    .contact-form select:focus,
+    .contact-form textarea:focus { border-color: var(--accent); background: #fff; }
+    .contact-form textarea { resize: vertical; min-height: 90px; }
+    .contact-form select { cursor: pointer; }
+    .btn-contact {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      color: #fff; border: none; border-radius: 12px;
+      font-family: var(--font); font-size: 0.93rem; font-weight: 700;
+      cursor: pointer; letter-spacing: -0.2px;
+      transition: opacity .2s, transform .2s;
+    }
+    .btn-contact:hover { opacity: .88; transform: translateY(-1px); }
+    .btn-contact:active { transform: translateY(0); }
+    .contact-success {
+      display: none; text-align: center; padding: 24px;
+      background: var(--sf); border-radius: 14px;
+      font-size: 0.9rem; color: var(--text); line-height: 1.6;
+    }
+
     @media (max-width: 480px) {
       .quiz-inner, .result-inner { padding: 24px 16px 60px; }
       .phone-card { padding: 16px; }
@@ -291,7 +377,37 @@
 
 <header>
   <a href="#" class="logo" onclick="return goHome()">🔍 내 폰 찾기<span class="dot">.</span></a>
+  <button class="btn-partner" onclick="openContact()">제휴 문의</button>
 </header>
+
+<!-- ── CONTACT MODAL ── -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeContact()"></div>
+<div class="modal-panel" id="modalPanel">
+  <div class="modal-header">
+    <div>
+      <p class="contact-label">Partnership</p>
+      <h2 class="contact-title">제휴 · 광고 문의</h2>
+    </div>
+    <button class="modal-close" onclick="closeContact()">✕</button>
+  </div>
+  <p class="contact-sub">콘텐츠 협업, 광고 게재, 기타 비즈니스 제안을<br>아래 양식으로 편하게 보내주세요.</p>
+  <form class="contact-form" id="contactForm" action="https://formspree.io/f/xgongdwd" method="POST">
+    <input type="text" name="name" placeholder="이름 / 회사명" required>
+    <input type="email" name="email" placeholder="이메일 주소" required>
+    <select name="type">
+      <option value="" disabled selected>문의 유형 선택</option>
+      <option value="광고">광고 게재</option>
+      <option value="콘텐츠 협업">콘텐츠 협업</option>
+      <option value="제품 제휴">제품 제휴</option>
+      <option value="기타">기타</option>
+    </select>
+    <textarea name="message" placeholder="문의 내용을 자유롭게 작성해주세요." required></textarea>
+    <button type="submit" class="btn-contact">문의 보내기 →</button>
+  </form>
+  <div class="contact-success" id="contactSuccess">
+    ✓ 문의가 접수되었습니다. 빠른 시일 내에 답변드리겠습니다.
+  </div>
+</div>
 
 <div id="progressWrap"><div id="progressFill" style="width:0%"></div></div>
 
@@ -898,6 +1014,49 @@ function shareResult() {
       prompt('아래 링크를 복사하세요:', url);
     });
   }
+}
+
+// ── Contact Modal ──
+function openContact() {
+  document.getElementById('modalBackdrop').classList.add('open');
+  document.getElementById('modalPanel').style.display = 'block';
+  requestAnimationFrame(() => document.getElementById('modalPanel').classList.add('open'));
+  document.body.style.overflow = 'hidden';
+}
+function closeContact() {
+  const panel = document.getElementById('modalPanel');
+  panel.classList.remove('open');
+  document.getElementById('modalBackdrop').classList.remove('open');
+  panel.addEventListener('transitionend', () => { panel.style.display = 'none'; }, { once: true });
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeContact(); });
+
+const contactForm = document.getElementById('contactForm');
+if (contactForm) {
+  contactForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = contactForm.querySelector('.btn-contact');
+    btn.textContent = '전송 중...';
+    btn.disabled = true;
+    try {
+      const res = await fetch(contactForm.action, {
+        method: 'POST',
+        body: new FormData(contactForm),
+        headers: { Accept: 'application/json' }
+      });
+      if (res.ok) {
+        contactForm.style.display = 'none';
+        document.getElementById('contactSuccess').style.display = 'block';
+      } else {
+        btn.textContent = '오류가 발생했습니다. 다시 시도해주세요.';
+        btn.disabled = false;
+      }
+    } catch {
+      btn.textContent = '오류가 발생했습니다. 다시 시도해주세요.';
+      btn.disabled = false;
+    }
+  });
 }
 </script>
 </body>
